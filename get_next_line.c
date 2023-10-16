@@ -6,14 +6,14 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/16 16:52:38 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/16 17:01:21 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdlib.h>
 #include <unistd.h>
-#define BUFF_SIZE 42
+#define BUFF_SIZE 4
 
 static char	*ft_strndup(const char *s, size_t n)
 {
@@ -55,14 +55,12 @@ char	*get_next_line(int fd)
 			return (line);
 		}
 		else
-		{
-			
+		{			
 			new_buff = ft_strjoin(buffer, extension);
 			new_buff += ft_strlen(buffer);
 			buffer = new_buff;
-		}
-	
-		read_size = read(fd, buffer, ft_strlen(buffer) - 1);
+		}	
+		read_size = read(fd, buffer, ft_strlen(buffer));
 	}
 	if (read <= 0)
 		return (NULL);
