@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/17 10:31:56 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/17 12:06:39 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define BUFFER_SIZE 200
+#define BUFFER_SIZE 1
 
 static char	*ft_strcpy(char *dest, const char *src)
 {
@@ -34,7 +34,7 @@ static char	*ft_strndup(const char *s, size_t n)
 		size = s_len;
 	else
 		size = n;
-	s2 = (char *) ft_calloc(size + 1, sizeof (char));
+	s2 = (char *) malloc((size + 1) * sizeof (char));
 	if (!s2)
 		return (NULL);
 	ft_strlcpy(s2, s, size + 1);
@@ -44,41 +44,46 @@ static char	*ft_strndup(const char *s, size_t n)
 char	*get_next_line(int fd)
 {
 	static char	*buffer;
-	char		ext[BUFFER_SIZE + 1];
+	size_t		read_size;
 	char		*new_buff;
-	char	*line;
-	size_t	read_size;
-	char	*chr;
+	char		*s_chr;
+	char		*line;
+	char		ext[BUFFER_SIZE + 1];
 	
 	if (!buffer)
 	{
 		buffer = (char *) malloc(BUFFER_SIZE * sizeof(char));
-		buffer[BUFFER_SIZE - 1] = '\0';				
+		int i = BUFFER_SIZE;
+		while (i--)
+			buffer[i] = 0;				
 	}
-	chr = ft_strchr(buffer, '\n');
-	while (!chr)
+	s_chr = ft_strchr(buffer, '\n');
+	while (!s_chr)
 	{			
-		read_size = read(fd, ext, BUFFER_SIZE - 1);
+		read_size = read(fd, ext, BUFFER_SIZE);
 		if (read_size)
 		{
 			ext[read_size] = '\0';
 			new_buff = ft_strjoin(buffer, ext);
+			free(buffer);		
 			buffer = new_buff;
-			chr = ft_strchr(buffer, '\n');			
+			s_chr = ft_strchr(buffer, '\n');			
 		}		
 		if (read_size <= 0)
 			if (*buffer)
-			{
-				line = buffer;
-				buffer = ft_strchr(buffer, '\0');
+			{			
+				line = ft_strndup(buffer, ft_strlen(buffer));
+				buffer[0] = '\0';
 				return (line);
 			}
 			else
+			{
+				free(buffer);
 				return (NULL);
-			
+			}				
 	}
-	line = ft_strndup(buffer, chr++ - buffer);
-	ft_strcpy(buffer, chr);
+	line = ft_strndup(buffer, ++s_chr - buffer);
+	ft_strcpy(buffer, s_chr);
 	return (line);
 }
 
@@ -99,7 +104,8 @@ int main(void)
 		if (!rslt) 
 			printf("is null\n");
 		else
-			printf("rslt: %s\n", rslt);
+			printf("rslt: %s", rslt);
+		free(rslt);
 		rslt = get_next_line(fd);
 	}
 	return (0);
