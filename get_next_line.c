@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/17 12:06:39 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/17 12:48:56 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 1
+/*
+** buff zero ?
+*/
 
 static char	*ft_strcpy(char *dest, const char *src)
 {
@@ -41,7 +44,13 @@ static char	*ft_strndup(const char *s, size_t n)
 	return (s2);
 }
 
-char	*get_next_line(int fd)
+static void	*ft_free_buffer(char *buffer)
+{
+	free(buffer);
+	return (NULL);
+}
+
+char	*ft_get_next_line(int fd)
 {
 	static char	*buffer;
 	size_t		read_size;
@@ -50,13 +59,10 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		ext[BUFFER_SIZE + 1];
 	
+	if (!buffer)	
+		buffer = (char *) calloc(BUFFER_SIZE, sizeof(char));
 	if (!buffer)
-	{
-		buffer = (char *) malloc(BUFFER_SIZE * sizeof(char));
-		int i = BUFFER_SIZE;
-		while (i--)
-			buffer[i] = 0;				
-	}
+		return (NULL);	
 	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
 	{			
@@ -65,7 +71,9 @@ char	*get_next_line(int fd)
 		{
 			ext[read_size] = '\0';
 			new_buff = ft_strjoin(buffer, ext);
-			free(buffer);		
+			free(buffer);
+			if (!new_buff)
+				return (NULL);	
 			buffer = new_buff;
 			s_chr = ft_strchr(buffer, '\n');			
 		}		
@@ -73,16 +81,17 @@ char	*get_next_line(int fd)
 			if (*buffer)
 			{			
 				line = ft_strndup(buffer, ft_strlen(buffer));
+				if (!line)
+					return (ft_free_buffer(buffer));				
 				buffer[0] = '\0';
 				return (line);
 			}
 			else
-			{
-				free(buffer);
-				return (NULL);
-			}				
+				return (ft_free_buffer(buffer));			
 	}
 	line = ft_strndup(buffer, ++s_chr - buffer);
+	if (!line)
+		return (ft_free_buffer(buffer));
 	ft_strcpy(buffer, s_chr);
 	return (line);
 }
@@ -98,7 +107,7 @@ int main(void)
 	
 	rslt = NULL;
 	fd = open(path, O_RDONLY);
-	rslt = get_next_line(fd);	
+	rslt = ft_get_next_line(fd);	
 	while (rslt)
 	{
 		if (!rslt) 
@@ -106,7 +115,7 @@ int main(void)
 		else
 			printf("rslt: %s", rslt);
 		free(rslt);
-		rslt = get_next_line(fd);
+		rslt = ft_get_next_line(fd);
 	}
 	return (0);
 }
