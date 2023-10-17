@@ -3,17 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/16 17:01:21 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/17 10:31:56 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdlib.h>
 #include <unistd.h>
-#define BUFF_SIZE 4
+
+#define BUFFER_SIZE 200
+
+static char	*ft_strcpy(char *dest, const char *src)
+{
+	while (*src)
+		*dest++ = *src++;
+	*dest = '\0';
+}
 
 static char	*ft_strndup(const char *s, size_t n)
 {
@@ -36,34 +44,42 @@ static char	*ft_strndup(const char *s, size_t n)
 char	*get_next_line(int fd)
 {
 	static char	*buffer;
-	char		extension[BUFF_SIZE];
+	char		ext[BUFFER_SIZE + 1];
 	char		*new_buff;
 	char	*line;
 	size_t	read_size;
 	char	*chr;
 	
-	buffer = (char *) malloc(BUFF_SIZE * sizeof (char));
-	chr = NULL;
-	read_size = read(fd, buffer, BUFF_SIZE - 1);
-	while (read_size)
-	{	
-		buffer[read_size] = '\0';
-		chr = ft_strchr(buffer, '\n');
-		if (chr)
-		{
-			line = ft_strndup(buffer, chr - buffer);			
-			return (line);
-		}
-		else
-		{			
-			new_buff = ft_strjoin(buffer, extension);
-			new_buff += ft_strlen(buffer);
-			buffer = new_buff;
-		}	
-		read_size = read(fd, buffer, ft_strlen(buffer));
+	if (!buffer)
+	{
+		buffer = (char *) malloc(BUFFER_SIZE * sizeof(char));
+		buffer[BUFFER_SIZE - 1] = '\0';				
 	}
-	if (read <= 0)
-		return (NULL);
+	chr = ft_strchr(buffer, '\n');
+	while (!chr)
+	{			
+		read_size = read(fd, ext, BUFFER_SIZE - 1);
+		if (read_size)
+		{
+			ext[read_size] = '\0';
+			new_buff = ft_strjoin(buffer, ext);
+			buffer = new_buff;
+			chr = ft_strchr(buffer, '\n');			
+		}		
+		if (read_size <= 0)
+			if (*buffer)
+			{
+				line = buffer;
+				buffer = ft_strchr(buffer, '\0');
+				return (line);
+			}
+			else
+				return (NULL);
+			
+	}
+	line = ft_strndup(buffer, chr++ - buffer);
+	ft_strcpy(buffer, chr);
+	return (line);
 }
 
 #include <fcntl.h>
