@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/17 14:47:21 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/17 23:03:20 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "libft.h"
 #include <unistd.h>
 
 char	*get_next_line(int fd)
@@ -23,15 +22,17 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		ext[BUFFER_SIZE + 1];
 	
+	if (fd < 0)
+		return (NULL);
 	if (!buffer)	
-		buffer = (char *) calloc(BUFFER_SIZE, sizeof(char));
+		buffer = (char *) calloc(BUFFER_SIZE, sizeof(char));//!
 	if (!buffer)
 		return (NULL);	
 	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
 	{			
 		read_size = read(fd, ext, BUFFER_SIZE);
-		if (read_size)
+		if (read_size > 0)
 		{
 			ext[read_size] = '\0';
 			new_buff = ft_strjoin(buffer, ext);
@@ -41,7 +42,7 @@ char	*get_next_line(int fd)
 			buffer = new_buff;
 			s_chr = ft_strchr(buffer, '\n');			
 		}		
-		if (read_size <= 0)
+		else if (read_size == 0)
 		{			
 			if (*buffer)
 			{			
@@ -54,6 +55,8 @@ char	*get_next_line(int fd)
 			else			
 				return (ft_free_buffer(buffer));					
 		}
+		else
+			return (ft_free_buffer(buffer));
 	}
 	line = ft_strndup(buffer, ++s_chr - buffer);
 	if (!line)
@@ -61,7 +64,7 @@ char	*get_next_line(int fd)
 	ft_strcpy(buffer, s_chr);
 	return (line);
 }
-
+/*
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -85,3 +88,4 @@ int main(void)
 	}
 	return (0);
 }
+*/
