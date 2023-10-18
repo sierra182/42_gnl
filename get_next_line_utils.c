@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/17 22:38:36 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/18 08:50:43 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,34 @@ char	*ft_strchr(const char *s, int c)
 	if (c_uc == '\0')
 		return ((char *) s);
 	return (NULL);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*s_uc;
+
+	s_uc = (unsigned char *) s;
+	while (n--)
+		*s_uc++ = (unsigned char) c;
+	return (s);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	ft_memset(s, 0, n);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+
+	if (size && nmemb * size / size != nmemb)
+		return (NULL);
+	ptr = malloc(nmemb * size);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, nmemb * size);
+	return (ptr);
 }
 
 void	*ft_free_buffer(char *buffer)

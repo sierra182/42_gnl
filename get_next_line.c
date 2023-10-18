@@ -6,12 +6,18 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/17 23:03:20 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/18 09:06:53 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+
+int is_fd_valid(int fd) {
+    return fcntl(fd, F_GETFD) != -1 || errno == EBADF;
+}
 
 char	*get_next_line(int fd)
 {
@@ -22,12 +28,16 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		ext[BUFFER_SIZE + 1];
 	
-	if (fd < 0)
-		return (NULL);
-	if (!buffer)	
-		buffer = (char *) calloc(BUFFER_SIZE, sizeof(char));//!
+	if (!is_fd_valid(fd))
+		return NULL;// (ft_free_buffer(buffer));
 	if (!buffer)
-		return (NULL);	
+	{
+		buffer = (char *) malloc(sizeof(char));//	BUFFER_SIZE	
+		if (buffer)
+			*buffer = 0;
+		else
+			return (NULL);		
+	}		
 	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
 	{			
@@ -64,10 +74,10 @@ char	*get_next_line(int fd)
 	ft_strcpy(buffer, s_chr);
 	return (line);
 }
-/*
+
 #include <fcntl.h>
 #include <stdio.h>
-
+/*
 int main(void)
 {
 	int		fd;
