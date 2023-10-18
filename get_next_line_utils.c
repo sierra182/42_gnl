@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/18 08:50:43 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/18 14:26:35 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*ft_strndup(const char *s, size_t n)
 		size = s_len;
 	else
 		size = n;
-	s2 = (char *) malloc((size + 1) * sizeof (char));
+	s2 = (char *) ft_calloc((size + 1), sizeof (char)); // malloc
 	if (!s2)
 		return (NULL);
 	ft_strlcpy(s2, s, size + 1);
@@ -69,7 +69,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	s3 = (char *) malloc(sizeof (char) * (s1_len + s2_len + 1));
+	s3 = (char *) ft_calloc((s1_len + s2_len + 1), sizeof (char)); // malloc
 	if (!s3)
 		return (NULL);
 	while (*s1)
@@ -123,6 +123,9 @@ void	*ft_calloc(size_t nmemb, size_t size)
 
 void	*ft_free_buffer(char *buffer)
 {
-	free(buffer);
+	if (buffer)
+	{
+		free(buffer);
+	}
 	return (NULL);
 }
