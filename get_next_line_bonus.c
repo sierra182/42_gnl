@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/19 17:33:39 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 18:14:30 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,25 @@ void	del_buff(t_list *lst)
 	}
 }
 
+void	del_link(t_list *lst)
+{
+	t_list	*temp;
+	
+	temp = lst->next;
+	del_buff(lst);
+	while (lst)
+	{
+		
+	}
+}
 char	**get_buffer(int fd)
 {
 	static t_list	*lst = NULL;
 	
+	if(fd == -42)
+	{
+		del_link(lst);
+	}
 	if (fd < 0)
 	{
 		del_buff(lst);
@@ -43,15 +58,12 @@ char	**get_buffer(int fd)
 		{		
 			if (!(lst->buffer))
 			{
-			 	lst->buffer = (char *) ft_calloc(1, sizeof(char));
+			 	lst->buffer = (char *) ft_calloc(1, sizeof(char));				
 				if (!(lst->buffer))
 				{
 					del_buff(lst);
 					lst = NULL;
 					return (NULL);
-						free(*buffer);
-				*buffer = NULL;
-				return (NULL);
 				}
 			}					
 			return &(lst->buffer);
@@ -162,7 +174,7 @@ char	*get_next_line(int fd)
 			}
 			else
 			{	
-				free(*buffer);
+				free(*buffer); // free le buffer mais pas la liste!
 				*buffer = NULL;
 				return (NULL);								
 			}			
