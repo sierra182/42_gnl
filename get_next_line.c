@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/19 11:24:56 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 13:09:06 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdint.h>
-#include <stdio.h> //
-#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
-	char		**buffer;
-//static char	*buffer;
+	static char	*buffer;
 	ssize_t		read_size;
 	char		*new_buff;
 	char		*s_chr;
@@ -32,21 +29,19 @@ char	*get_next_line(int fd)
 	ext = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 	{	
-		//if (buffer)		
-		//	free(buffer);
+		if (buffer)		
+			free(buffer);
 		buffer = NULL;
 		return (NULL);	 
 	}	
-		
-	buffer = get_buffer(fd);	
 	
-	// if (!buffer)
-	// {
-	// 	buffer = (char *) ft_calloc(1, sizeof(char));
-	// 	if (!buffer)
-	// 		return (NULL);				
-	// }
-	s_chr = ft_strchr(*buffer, '\n');
+	if (!buffer)
+	{
+		buffer = (char *) ft_calloc(1, sizeof(char));
+		if (!buffer)
+			return (NULL);				
+	}
+	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
 	{	
 			// printf("NUM: %zu\n", ft_strlen(buffer));
@@ -69,59 +64,58 @@ char	*get_next_line(int fd)
 		read_size = read(fd, ext, BUFFER_SIZE);
 		if (read_size > 0)
 		{			
-			new_buff = ft_strjoin(*buffer, ext);
-			free(*buffer);
-			*buffer = NULL;
+			new_buff = ft_strjoin(buffer, ext);
+			free(buffer);
+			buffer = NULL;
 			free(ext);
 			if (!new_buff)
 			{
-				// free(buffer);
-				// buffer = NULL;
-				// return (NULL);
+				free(buffer);
+				buffer = NULL;
+				return (NULL);
 			}
 			
-			*buffer = new_buff;
-			s_chr = ft_strchr(*buffer, '\n');			
+			buffer = new_buff;
+			s_chr = ft_strchr(buffer, '\n');			
 		}		
 		else if (read_size == 0)
 		{	
 			free(ext);		
-			if (**buffer)
+			if (*buffer)
 			{			
-				line = ft_strndup(*buffer, ft_strlen(*buffer));
+				line = ft_strndup(buffer, ft_strlen(buffer));
 				if (!line)
 				{
-					// free(buffer);
-					// buffer = NULL;
-					// return (NULL);
-				}	
-				//printf("AH\n");			
-				(*buffer)[0] = '\0';
+					free(buffer);
+					buffer = NULL;
+					return (NULL);
+				}							
+				buffer[0] = '\0';
 				return (line);
 			}
 			else
 			{	
-				free(*buffer);
-				*buffer = NULL;
+				free(buffer);
+				buffer = NULL;
 				return (NULL);								
 			}			
 		}
 		else 
 		{
 			free(ext);
-			free(*buffer);
-			*buffer = NULL;
+			free(buffer);
+			buffer = NULL;
 			return (NULL);		
 		}
 	}
-	line = ft_strndup(*buffer, ++s_chr - *buffer);
+	line = ft_strndup(buffer, ++s_chr - buffer);
 	if (!line)
 	{
-		// free(buffer);
-		// buffer = NULL;
-		// return (NULL);
+		free(buffer);
+		buffer = NULL;
+		return (NULL);
 	}
-	ft_strcpy(*buffer, s_chr);
+	ft_strcpy(buffer, s_chr);
 	return (line);
 }
 
@@ -144,10 +138,13 @@ int main(void)
 			printf("is null\n");
 		else
 			printf("rslt: %s", rslt);
-		//free(rslt);
+		free(rslt);
 		rslt = get_next_line(fd);
 	}
 	close(fd);
 	return (0);
 }
 */
+
+
+
