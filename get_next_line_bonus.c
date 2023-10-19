@@ -6,30 +6,74 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/19 13:27:55 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 17:33:39 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <unistd.h>
 
+void	del_buff(t_list *lst)
+{
+	t_list	*temp;
+	
+	while (lst)
+	{
+		temp = lst->next;
+		if (lst->buffer)
+			free(lst->buffer);
+		free(lst);
+		lst = temp;
+	}
+}
+
 char	**get_buffer(int fd)
 {
-	static t_list	*lst;
+	static t_list	*lst = NULL;
 	
+	if (fd < 0)
+	{
+		del_buff(lst);
+		lst = NULL;
+		return (NULL);
+	}
 	while(lst)
 	{
 		if (lst->fd == fd)
 		{		
-			if (!(lst->buffer))	
-				lst->buffer = (char *) ft_calloc(1, sizeof(char));	
+			if (!(lst->buffer))
+			{
+			 	lst->buffer = (char *) ft_calloc(1, sizeof(char));
+				if (!(lst->buffer))
+				{
+					del_buff(lst);
+					lst = NULL;
+					return (NULL);
+						free(*buffer);
+				*buffer = NULL;
+				return (NULL);
+				}
+			}					
 			return &(lst->buffer);
 		}		
 		lst = lst->next; 
 	}
-	lst = (t_list *) malloc(sizeof(t_list));
+	lst = (t_list *) ft_calloc(1, sizeof(t_list));
+	if (!lst)
+	{
+		del_buff(lst);
+		lst = NULL;
+		return (NULL);
+	}
 	lst->fd = fd;
+	lst->next = NULL;
 	lst->buffer = (char *) ft_calloc(1, sizeof(char));
+	if (!(lst->buffer))
+	{
+		del_buff(lst);
+		lst = NULL;
+		return (NULL);
+	}
 	return &(lst->buffer);
 }
 
@@ -41,20 +85,17 @@ char	*get_next_line(int fd)
 	char		*s_chr;
 	char		*line;
 	char		*ext;
-		
+
+	buffer = NULL;	
 	new_buff = NULL;
 	s_chr = NULL;
 	ext = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-	{	
-		//if (buffer)		
-			//free(buffer);
-		buffer = NULL;
+	if (BUFFER_SIZE <= 0)
 		return (NULL);	 
-	}	
-		
-	buffer = get_buffer(fd);	
 	
+	buffer = get_buffer(fd);	
+	if (!buffer)
+		return (NULL);
 	// if (!buffer)
 	// {
 	// 	buffer = (char *) ft_calloc(1, sizeof(char));
@@ -90,9 +131,12 @@ char	*get_next_line(int fd)
 			free(ext);
 			if (!new_buff)
 			{
-				free(buffer);
-				buffer = NULL;
-				return (NULL);
+				free(*buffer);
+				*buffer = NULL;
+				return (NULL);  // liberer le fd en cours 
+				// buffer = get_buffer(-1);	
+				// if (!buffer)
+				// 	return (NULL);
 			}
 			
 			*buffer = new_buff;
@@ -106,9 +150,12 @@ char	*get_next_line(int fd)
 				line = ft_strndup(*buffer, ft_strlen(*buffer));
 				if (!line)
 				{
-					free(buffer);
-					buffer = NULL;
-					return (NULL);
+					free(*buffer);
+					*buffer = NULL;
+					return (NULL); // liberer le fd en cours 
+					// buffer = get_buffer(-1);	
+					// if (!buffer)
+					// 	return (NULL);
 				}						
 				(*buffer)[0] = '\0';
 				return (line);
@@ -123,17 +170,23 @@ char	*get_next_line(int fd)
 		else 
 		{
 			free(ext);
-			free(*buffer);
-			*buffer = NULL;
-			return (NULL);		
+			// free(*buffer); // liberer le fd en cours 
+			// *buffer = NULL;
+			// return (NULL);
+			buffer = get_buffer(-1);	
+			if (!buffer)
+				return (NULL);	
 		}
 	}
 	line = ft_strndup(*buffer, ++s_chr - *buffer);
 	if (!line)
 	{
-		free(buffer);
-		buffer = NULL;
+		free(*buffer);
+		*buffer = NULL; // liberer le fd en cours 
 		return (NULL);
+		//  buffer = get_buffer(-1);	
+		//  if (!buffer)
+		//  	return (NULL);
 	}
 	ft_strcpy(*buffer, s_chr);
 	return (line);
