@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/18 14:26:35 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 08:49:56 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ size_t	ft_strlen(const char *s)
 	while (*s++)
 		i++;
 	return (i);
+}
+
+char	*ft_strcpy2(char **dest, const char *src)
+{
+	while (*src)
+		**dest++ = *src++;
+	**dest = '\0';
+	return (*dest);
 }
 
 char	*ft_strcpy(char *dest, const char *src)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:15:30 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/18 14:26:29 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 08:50:21 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
+char	*ft_strcpy2(char **dest, const char *src);
 char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_strjoin(char const *s1, char const *s2);

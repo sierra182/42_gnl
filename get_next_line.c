@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/18 17:25:57 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 09:29:02 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdint.h>
+#include <stdio.h>
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	char		*buffer;
+//static char	*buffer;
 	ssize_t		read_size;
 	char		*new_buff;
 	char		*s_chr;
@@ -29,21 +32,23 @@ char	*get_next_line(int fd)
 	ext = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 	{	
-		if (buffer)		
-			free(buffer);
+		//if (buffer)		
+		//	free(buffer);
 		buffer = NULL;
 		return (NULL);	 
-	}	 			
-	if (!buffer)
-	{
-		buffer = (char *) ft_calloc(1, sizeof(char));
-		if (!buffer)
-			return (NULL);				
-	}
+	}	
+	buffer = get_buffer(fd); 			
+	// if (!buffer)
+	// {
+	// 	buffer = (char *) ft_calloc(1, sizeof(char));
+	// 	if (!buffer)
+	// 		return (NULL);				
+	// }
 	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
 	{	
-			// if (ft_strlen(buffer) > SIZE_MAX - (BUFFER_SIZE + 1))
+			// printf("NUM: %zu\n", ft_strlen(buffer));
+			// if (ft_strlen(buffer) > SIZE_MAX - (BUFFER_SIZE + 2))
 			// {	
 						
 			// 	line = ft_strndup(buffer, ft_strlen(buffer));
@@ -57,6 +62,7 @@ char	*get_next_line(int fd)
 			// 	buffer = NULL;
 			// 	return (line);	
 			// }
+
 		ext = (char *) ft_calloc(BUFFER_SIZE + 1, sizeof(char));		
 		read_size = read(fd, ext, BUFFER_SIZE);
 		if (read_size > 0)
@@ -67,9 +73,9 @@ char	*get_next_line(int fd)
 			free(ext);
 			if (!new_buff)
 			{
-				free(buffer);
-				buffer = NULL;
-				return (NULL);
+				// free(buffer);
+				// buffer = NULL;
+				// return (NULL);
 			}
 			
 			buffer = new_buff;
@@ -83,9 +89,9 @@ char	*get_next_line(int fd)
 				line = ft_strndup(buffer, ft_strlen(buffer));
 				if (!line)
 				{
-					free(buffer);
-					buffer = NULL;
-					return (NULL);
+					// free(buffer);
+					// buffer = NULL;
+					// return (NULL);
 				}				
 				buffer[0] = '\0';
 				return (line);
@@ -111,14 +117,14 @@ char	*get_next_line(int fd)
 	line = ft_strndup(buffer, ++s_chr - buffer);
 	if (!line)
 	{
-		free(buffer);
-		buffer = NULL;
-		return (NULL);
+		// free(buffer);
+		// buffer = NULL;
+		// return (NULL);
 	}
 	ft_strcpy(buffer, s_chr);
 	return (line);
 }
-/*
+
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -126,7 +132,7 @@ char	*get_next_line(int fd)
 int main(void)
 {
 	int		fd;
-	char	*path = "empty.txt";
+	char	*path = "test.txt";
 	char	*rslt;
 	
 	rslt = NULL;
@@ -138,16 +144,9 @@ int main(void)
 			printf("is null\n");
 		else
 			printf("rslt: %s", rslt);
-		free(rslt);
+		//free(rslt);
 		rslt = get_next_line(fd);
 	}
 	close(fd);
 	return (0);
 }
-*/
-
-
-
-
-
-
