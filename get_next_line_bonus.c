@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/20 10:29:47 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/20 13:31:43 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ void	del_buff(t_list **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		if ((*lst)->buffer)
-			free((*lst)->buffer);
+		free((*lst)->buffer);		
 		free(*lst);
 		*lst = temp;
 	}
@@ -33,13 +32,16 @@ void	del_buff(t_list **lst)
 void	del_link(t_list **link, t_list *lst)
 {
 	t_list	*temp;
-	
+			
 	temp = (*link)->next;
+	if ((*link)->buffer)
+		free((*link)->buffer);
 	free(*link);
 	*link = NULL;
-	while (lst->next)
-		lst = lst->next;
-	lst->next = temp;
+	while ((lst)->next)
+		lst = (lst)->next;
+	if (lst)	
+		(lst)->next = temp;	
 }
 
 t_list	**get_bufferlink(int fd, t_list **lst)
@@ -52,19 +54,19 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 	{
 		if ((*lst)->fd == fd)
 		{		
-			if (!(*lst)->buffer)
-			{
-			 	(*lst)->buffer = (char *) ft_calloc(1, sizeof(char));				
-				if (!((*lst)->buffer))
-				{
+			//if (!(*lst)->buffer)
+			//{
+			 	//(*lst)->buffer = (char *) ft_calloc(1, sizeof(char));				
+				//if (!((*lst)->buffer))
+				//{
 					// del_buff(&temp);
 					// lst = NULL;
 					// return (NULL);
-				}
-			}	
+				//}
+			//}	
 			t_list **bufferlink = lst;
 			if (temp)
-			*lst = temp;
+				*lst = temp;
 			return (bufferlink);		
 			//return (&(*lst)->buffer);
 		}		
@@ -73,22 +75,27 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 	*lst = (t_list *) ft_calloc(1, sizeof(t_list));
 	if (!lst)
 	{
+		del_link(&temp, *lst);
+			return (NULL);
 		// del_buff(lst);
 		// lst = NULL;
 		// return (NULL);
 	}
+	//temp = lst;
 	(*lst)->fd = fd;
 	(*lst)->next = NULL;
 	(*lst)->buffer = (char *) ft_calloc(1, sizeof(char));
 	if (!((*lst)->buffer))
 	{
+		del_link(&temp, *lst);
+			return (NULL);
 		// del_buff(&temp);
 		// lst = NULL;
 		// return (NULL);
 	}
-	t_list **bufferlink = lst;
 	if (temp)
-		*lst = temp;
+	 	*lst = temp;
+	t_list **bufferlink = lst;
 	return (bufferlink);
 	//return(&lst->buffer);
 }
@@ -151,6 +158,8 @@ char	*get_next_line(int fd)
 				// return (NULL);  // liberer le fd en cours 
 				// del_buff(&lst);
 				// return (NULL);
+				del_link(bufferlink, lst);
+				return (NULL);
 			}
 			
 			(*bufferlink)->buffer = new_buff;
@@ -169,6 +178,8 @@ char	*get_next_line(int fd)
 					// return (NULL); // liberer le fd en cours 
 					// del_buff(&lst);
 					// return (NULL);
+					del_link(bufferlink, lst);
+					return (NULL);
 				}						
 				(*bufferlink)->buffer[0] = '\0';
 				return (line);
@@ -178,7 +189,7 @@ char	*get_next_line(int fd)
 				// free(*buffer); // free le buffer mais pas la liste!
 				// *buffer = NULL;
 				// return (NULL);	
-				
+				//del_link(bufferlink, lst);
 				del_buff(&lst);
 				return (NULL);								
 			}			
@@ -192,7 +203,7 @@ char	*get_next_line(int fd)
 			
 			del_buff(&lst);
 			//return (NULL);
-		//del_link(bufferlink, lst);
+			//del_link(bufferlink, lst);
 			return (NULL);	
 		}
 	}
@@ -204,7 +215,63 @@ char	*get_next_line(int fd)
 		// return (NULL);
 		// del_buff(&lst);
 		// 	return (NULL);
+		del_link(bufferlink, lst);
+			return (NULL);
 	}
 	ft_strcpy((*bufferlink)->buffer, s_chr);
 	return (line);
+}
+
+
+#include <fcntl.h>
+#include <stdio.h>
+
+int main(void)
+{
+	int		fd;
+	int		fd2;
+	char	*path = "test.txt";
+	char	*path2 = "test2.txt";
+	char	*rslt;
+	char	*rslt2;
+	
+	rslt = NULL;
+	rslt2 = NULL;
+	fd = open(path, O_RDONLY);
+	fd2 = open(path2, O_RDONLY);
+	rslt = get_next_line(fd);	
+	while (rslt)
+	{
+		if (!rslt) 
+			printf("is null\n");
+		else
+			printf("rslt: %s", rslt);
+		free(rslt);
+		rslt = get_next_line(fd);
+	rslt2 = get_next_line(fd2);	
+		while (rslt2)
+		{
+			if (!rslt2) 
+			printf("is null\n");
+			else
+			printf("rslt: %s", rslt2);
+			free(rslt2);
+			rslt2 = get_next_line(fd2);
+		}
+	}
+	close(fd);
+	fd = open(path, O_RDONLY);
+	rslt = get_next_line(fd);	
+	while (rslt)
+	{
+		if (!rslt) 
+			printf("is null\n");
+		else
+			printf("rslt: %s", rslt);
+		free(rslt);
+		rslt = get_next_line(fd);
+	}
+	close(fd);
+	close(fd2);
+	return (0);
 }
