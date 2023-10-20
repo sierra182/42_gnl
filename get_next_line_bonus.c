@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/20 14:48:58 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/20 16:51:46 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <unistd.h>
-
+#include <stdio.h>
 void	del_buff(t_list **lst)
 {
 	t_list	*temp;
@@ -51,7 +51,7 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 	temp = *lst;	
 	
 	while(*lst)
-	{
+	{ printf("boucle\n");
 		if ((*lst)->fd == fd)
 		{		
 			//if (!(*lst)->buffer)
@@ -65,8 +65,8 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 				//}
 			//}	
 			t_list **bufferlink = &(*lst);
-			//if (temp)
-			//	*lst = temp;
+			if (temp)
+				*lst = temp;
 			return (bufferlink);		
 			//return (&(*lst)->buffer);
 		}		
