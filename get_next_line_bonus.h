@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:58:55 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/19 13:02:07 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/20 06:12:23 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_list
 } t_list;
 
 char	*get_next_line(int fd);
-char	**get_buffer(int fd);
+char	**get_buffer(int fd, t_list **lst);
 size_t	ft_strlen(const char *s);
 char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
