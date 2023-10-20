@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/20 13:31:43 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/20 14:48:58 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 					// return (NULL);
 				//}
 			//}	
-			t_list **bufferlink = lst;
-			if (temp)
-				*lst = temp;
+			t_list **bufferlink = &(*lst);
+			//if (temp)
+			//	*lst = temp;
 			return (bufferlink);		
 			//return (&(*lst)->buffer);
 		}		
@@ -93,8 +93,8 @@ t_list	**get_bufferlink(int fd, t_list **lst)
 		// lst = NULL;
 		// return (NULL);
 	}
-	if (temp)
-	 	*lst = temp;
+	//if (temp)
+	 //	*lst = temp;
 	t_list **bufferlink = lst;
 	return (bufferlink);
 	//return(&lst->buffer);
@@ -189,8 +189,8 @@ char	*get_next_line(int fd)
 				// free(*buffer); // free le buffer mais pas la liste!
 				// *buffer = NULL;
 				// return (NULL);	
-				//del_link(bufferlink, lst);
-				del_buff(&lst);
+				del_link(bufferlink, lst);
+				//del_buff(&lst);
 				return (NULL);								
 			}			
 		}
@@ -235,42 +235,49 @@ int main(void)
 	char	*rslt;
 	char	*rslt2;
 	
-	rslt = NULL;
-	rslt2 = NULL;
+	rslt = "a";
+	rslt2 = "a";
 	fd = open(path, O_RDONLY);
 	fd2 = open(path2, O_RDONLY);
-	rslt = get_next_line(fd);	
+		
+	int pass = 0;	
 	while (rslt)
 	{
+		rslt = get_next_line(fd);
 		if (!rslt) 
 			printf("is null\n");
 		else
 			printf("rslt: %s", rslt);
 		free(rslt);
-		rslt = get_next_line(fd);
-	rslt2 = get_next_line(fd2);	
-		while (rslt2)
+		
+		printf("\033[36m");
+		while (!pass && rslt2)
 		{
+			rslt2 = get_next_line(fd2);	
 			if (!rslt2) 
 			printf("is null\n");
 			else
-			printf("rslt: %s", rslt2);
+			printf("in rslt: %s", rslt2);
 			free(rslt2);
-			rslt2 = get_next_line(fd2);
+			//rslt2 = get_next_line(fd2);
 		}
+		pass++;
+		printf("\033[0m");
 	}
 	close(fd);
 	fd = open(path, O_RDONLY);
-	rslt = get_next_line(fd);	
+	rslt = "a";
+	printf("\033[33m");
 	while (rslt)
 	{
+		rslt = get_next_line(fd);
 		if (!rslt) 
 			printf("is null\n");
 		else
 			printf("rslt: %s", rslt);
 		free(rslt);
-		rslt = get_next_line(fd);
 	}
+	printf("\033[0m");
 	close(fd);
 	close(fd2);
 	return (0);

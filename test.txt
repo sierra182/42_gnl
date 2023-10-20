@@ -1,7 +1,5 @@
 j'aime 42
 et toi ?
-
-
 tu prefere 41 ?
-
 pff t'es null.
+
