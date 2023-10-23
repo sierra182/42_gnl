@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 09:22:26 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/23 15:06:58 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*ft_strndup(const char *s, size_t n)
 		size = s_len;
 	else
 		size = n;
-	s2 = (char *) ft_calloc((size + 1), sizeof (char)); // malloc
+	s2 = (char *) malloc((size + 1) * sizeof (char)); 
 	if (!s2)
 		return (NULL);
 	ft_strlcpy(s2, s, size + 1);
@@ -69,7 +69,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	s3 = (char *) ft_calloc((s1_len + s2_len + 1), sizeof (char)); // malloc
+	s3 = (char *) malloc((s1_len + s2_len + 1) * sizeof (char));
 	if (!s3)
 		return (NULL);
 	while (*s1)
@@ -93,32 +93,22 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-static void	*ft_memset(void *s, int c, size_t n)
-{
-	unsigned char	*s_uc;
-
-	s_uc = (unsigned char *) s;
-	while (n--)
-		*s_uc++ = (unsigned char) c;
-	return (s);
-}
-
-static void	ft_bzero(void *s, size_t n)
-{
-	ft_memset(s, 0, n);
-}
-
 void	*ft_calloc(size_t nmemb, size_t size)
 {
-	void	*ptr;
-
+	unsigned char	*ptr;
+	size_t			len;
+	size_t			len_save;
+	
 	if (size && nmemb * size / size != nmemb)
-		return (NULL);
-	ptr = malloc(nmemb * size);
+		return (NULL);		
+	len = nmemb * size;
+	len_save = len;
+	ptr = (unsigned char *) malloc(len);
 	if (!ptr)
 		return (NULL);
-	ft_bzero(ptr, nmemb * size);
-	return (ptr);
+	while (len--)
+		*ptr++ = 0;	
+	return ((void *) ptr - len_save);
 }
 
 void	*free_buffer(char **buffer)
