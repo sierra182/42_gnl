@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 09:14:12 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 13:09:06 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,14 @@ char	*get_next_line(int fd)
 	new_buff = NULL;
 	s_chr = NULL;
 	ext = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0)		
-		return (free_buffer(&buffer)); 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+	{	
+		if (buffer)		
+			free(buffer);
+		buffer = NULL;
+		return (NULL);	 
+	}	
+	
 	if (!buffer)
 	{
 		buffer = (char *) ft_calloc(1, sizeof(char));
@@ -37,7 +43,22 @@ char	*get_next_line(int fd)
 	}
 	s_chr = ft_strchr(buffer, '\n');
 	while (!s_chr)
-	{			
+	{	
+			// printf("NUM: %zu\n", ft_strlen(buffer));
+			// if (ft_strlen(buffer) > SIZE_MAX - (BUFFER_SIZE + 2))
+			// {	
+						
+			// 	line = ft_strndup(buffer, ft_strlen(buffer));
+			// 	if (!line)
+			// 	{
+			// 		free(buffer);
+			// 		buffer = NULL;
+			// 		return (NULL);
+			// 	}
+			// 	free(buffer);
+			// 	buffer = NULL;
+			// 	return (line);	
+			// }
 
 		ext = (char *) ft_calloc(BUFFER_SIZE + 1, sizeof(char));		
 		read_size = read(fd, ext, BUFFER_SIZE);
@@ -48,7 +69,11 @@ char	*get_next_line(int fd)
 			buffer = NULL;
 			free(ext);
 			if (!new_buff)
-				return (free_buffer(&buffer));
+			{
+				free(buffer);
+				buffer = NULL;
+				return (NULL);
+			}
 			
 			buffer = new_buff;
 			s_chr = ft_strchr(buffer, '\n');			
@@ -60,22 +85,36 @@ char	*get_next_line(int fd)
 			{			
 				line = ft_strndup(buffer, ft_strlen(buffer));
 				if (!line)
-					return (free_buffer(&buffer));							
+				{
+					free(buffer);
+					buffer = NULL;
+					return (NULL);
+				}							
 				buffer[0] = '\0';
 				return (line);
 			}
 			else
-				return (free_buffer(&buffer));			
+			{	
+				free(buffer);
+				buffer = NULL;
+				return (NULL);								
+			}			
 		}
 		else 
 		{
 			free(ext);
-			return (free_buffer(&buffer));		
+			free(buffer);
+			buffer = NULL;
+			return (NULL);		
 		}
 	}
 	line = ft_strndup(buffer, ++s_chr - buffer);
 	if (!line)
-		return (free_buffer(&buffer));
+	{
+		free(buffer);
+		buffer = NULL;
+		return (NULL);
+	}
 	ft_strcpy(buffer, s_chr);
 	return (line);
 }

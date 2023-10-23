@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 09:18:02 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/19 12:49:34 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,11 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (ptr);
 }
 
-void	*free_buffer(char **buffer)
+void	*ft_free_buffer(char *buffer)
 {
-	if (*buffer)
-		free(*buffer);
-	*buffer = NULL;	
+	if (buffer)
+	{
+		free(buffer);
+	}
 	return (NULL);
 }
