@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 09:18:02 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/23 09:22:26 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-void	*ft_memset(void *s, int c, size_t n)
+static void	*ft_memset(void *s, int c, size_t n)
 {
 	unsigned char	*s_uc;
 
@@ -103,7 +103,7 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-void	ft_bzero(void *s, size_t n)
+static void	ft_bzero(void *s, size_t n)
 {
 	ft_memset(s, 0, n);
 }
