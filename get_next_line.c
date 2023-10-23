@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 14:45:19 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/23 17:40:29 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ char	*get_next_line(int fd)
 	char		*newline;
 	char		*line;
 	char		*rslt_nonewl;
+	size_t		newline_len;
 
 	if (!manage_prequel(fd, &buffer))
 		return (NULL);
@@ -106,7 +107,11 @@ char	*get_next_line(int fd)
 	line = ft_strndup(buffer, ++newline - buffer);
 	if (!line)
 		return (free_buffer(&buffer));
-	ft_strcpy(buffer, newline);
+	newline_len = ft_strlen(newline);
+	while (*newline)
+		*buffer++ = *newline++;
+	*buffer = '\0';
+	buffer -= newline_len;
 	return (line);
 }
 

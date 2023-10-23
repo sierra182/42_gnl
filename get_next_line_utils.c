@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 15:06:58 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/23 17:40:41 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,43 +22,26 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strcpy(char *dest, const char *src)
-{
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-	return (dest);
-}
-
-static size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	size_t	src_len;
-
-	src_len = ft_strlen(src);
-	if (size == 0)
-		return (src_len);
-	while (*src && --size)
-		*dst++ = *src++;
-	*dst = '\0';
-	return (src_len);
-}
-
 char	*ft_strndup(const char *s, size_t n)
 {
 	char	*s2;
 	size_t	s_len;
 	size_t	size;
-
+	size_t	size_save;
+	
 	s_len = ft_strlen(s);
 	if (n > s_len)
 		size = s_len;
 	else
 		size = n;
+	size_save = size;
 	s2 = (char *) malloc((size + 1) * sizeof (char)); 
 	if (!s2)
 		return (NULL);
-	ft_strlcpy(s2, s, size + 1);
-	return (s2);
+	while (size--)
+		*s2++ = *s++;
+	*s2 = 0;	
+	return (s2 - size_save);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
