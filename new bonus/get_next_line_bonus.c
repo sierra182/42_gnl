@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/24 13:28:51 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/24 15:58:35 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,40 +16,40 @@
 #include <stdint.h>
 
 #include <stdio.h>
-void	del_buff(t_list **lst)
-{
-	t_list	*temp;
+// void	del_buff(t_list **lst)
+// {
+// 	t_list	*temp;
 
-	while (*lst)
-	{
-		temp = (*lst)->next;
-		free((*lst)->buffer);		
-		free(*lst);
-		*lst = temp;
-	}
-}
+// 	while (*lst)
+// 	{
+// 		temp = (*lst)->next;
+// 		free((*lst)->buffer);		
+// 		free(*lst);
+// 		*lst = temp;
+// 	}
+// }
 
-void	del_link(t_list **link, t_list **lst)
-{
-	t_list	*lsttemp;
-	t_list	*lstnext;
+// void	del_link(t_list **link, t_list **lst)
+// {
+// 	t_list	*lsttemp;
+// 	t_list	*lstnext;
 
 	
-	lsttemp = *lst;
-	while (*lst)
-	{
-		if ((*lst)->fd == (*link)->fd)
-		{			
-			lstnext = (*lst)->next;
-			free((*lst)->buffer);
-			free(*lst);
-			if (lstnext)
-				*lst = lstnext;			
-		}
-		*lst = (*lst)->next;		
-	}
-	*lst = lsttemp; 
-}
+// 	lsttemp = *lst;
+// 	while (*lst)
+// 	{
+// 		if ((*lst)->fd == (*link)->fd)
+// 		{			
+// 			lstnext = (*lst)->next;
+// 			free((*lst)->buffer);
+// 			free(*lst);
+// 			if (lstnext)
+// 				*lst = lstnext;			
+// 		}
+// 		*lst = (*lst)->next;		
+// 	}
+// 	*lst = lsttemp; 
+// }
 
 t_list	*create_newlink(int fd)
 {
@@ -62,20 +62,19 @@ t_list	*create_newlink(int fd)
 	return (newlink);
 }
 
-t_list	**search_fdlink(int fd, t_list **lst)
+t_list	*search_fdlink(int fd, t_list **lst)
 {
-	t_list	**fdlink;
+	t_list	*fdlink;
 	t_list	*temp;
 	
 	if ((*lst)->fd == fd)
-		return (lst);	
-	fdlink = (t_list **) malloc(sizeof(t_list *));
+		return (*lst);		
 	temp = *lst;
 	while (temp->next)
 	{	
-		*fdlink = temp;
+		fdlink = temp;
 		if (temp->next->fd == fd)
-		{	*fdlink = temp->next;		
+		{	fdlink = temp->next;		
 			return (fdlink);
 		}
 		temp = temp->next;
@@ -83,23 +82,23 @@ t_list	**search_fdlink(int fd, t_list **lst)
 	return (NULL);
 }
 
-t_list	**lst_addfront(t_list **lst, t_list *new)
+t_list	*lst_addfront(t_list **lst, t_list *new)
 {
 	new->next = *lst;
 	*lst = new;
-	return (lst);
+	return (*lst);
 }
 
-t_list	**get_bufferlink(int fd, t_list **lst)
+char	*get_buffer(int fd, t_list **lst)
 {
-	t_list	**fdlink;
+	t_list	*fdlink;
 	
 	if (!*lst)
 		*lst = create_newlink(fd); 	
 	fdlink = search_fdlink(fd, lst); 
 	if (fdlink)
-	 	return (fdlink);	
-	return (lst_addfront(lst, create_newlink(fd)));
+	 	return (fdlink->buffer);	
+	return ((lst_addfront(lst, create_newlink(fd)))->buffer);
 }
 
 char	*manage_endfile(char **buffer, char *ext)
@@ -108,30 +107,34 @@ char	*manage_endfile(char **buffer, char *ext)
 
 	free(ext);
 	if (**buffer)
-	{
+	{	
 		line = ft_strndup(*buffer, ft_strlen(*buffer));
 		// if (!line)
 		// 	return (free_buffer(buffer));
-		(*buffer)[0] = '\0';
+		(*buffer)[0] = '\0'; 
 		return (line);
 	}
-	else		
-		return (free_buffer(buffer));
+	else
+	{
+		//free(*buffer);
+		//*buffer = NULL;
+		return (NULL);//(free_buffer(buffer));
+	}		
 }
 
-char	*manage_prequel( char **buffer)
-{
-	//if (fd < 0 || BUFFER_SIZE <= 0)
-		//return (NULL);
-		//return (free_buffer(buffer));
-	if (!*buffer)
-	{
-		*buffer = (char *) ft_calloc(1, sizeof(char));
-		// if (!*buffer)
-		// 	return (NULL);
-	}
-	return ("ok");
-}
+// char	*manage_prequel( char **buffer)
+// {
+// 	//if (fd < 0 || BUFFER_SIZE <= 0)
+// 		//return (NULL);
+// 		//return (free_buffer(buffer));
+// 	if (!*buffer)
+// 	{
+// 		*buffer = (char *) ft_calloc(1, sizeof(char));
+// 		// if (!*buffer)
+// 		// 	return (NULL);
+// 	}
+// 	return ("ok");
+// }
 
 char	*merge_buffers(char **buffer, char *ext)
 {
@@ -153,7 +156,7 @@ char	*merge_buffers(char **buffer, char *ext)
 		*new_buff++ = *ext++;
 	*new_buff = '\0';
 	*buffer -= buffer_len;
-	free(*buffer);
+		free(*buffer);
 	free(ext - ext_len);
 	*buffer = new_buff - ext_len - buffer_len;
 	return ("ok");
@@ -181,7 +184,8 @@ char	*manage_no_newline(int fd, char **buffer, char **newline)
 		else
 		{
 			free(ext);
-			return (free_buffer(buffer));			
+			//return (free_buffer(buffer));
+			return (NULL);			
 		}
 	}
 	return (NULL);
@@ -189,15 +193,17 @@ char	*manage_no_newline(int fd, char **buffer, char **newline)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;	
-	char		*newline;
-	char		*line;
-	char		*rslt_nonewl;
-	size_t		newline_len;
+	static t_list	*lst = NULL;
+	char			*buffer;	
+	char			*newline;
+	char			*line;
+	char			*rslt_nonewl;
+	size_t			newline_len;
 
 	// if (!manage_prequel(&buffer))
-	// 	return (NULL);
-	buffer =
+	//  	return (NULL);
+	buffer = get_buffer(fd, &lst);
+	
 	newline = ft_strchr(buffer, '\n');
 	if (!newline)
 	{
