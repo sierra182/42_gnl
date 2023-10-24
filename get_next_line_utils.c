@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/23 17:40:41 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/24 11:42:38 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,39 +28,20 @@ char	*ft_strndup(const char *s, size_t n)
 	size_t	s_len;
 	size_t	size;
 	size_t	size_save;
-	
+
 	s_len = ft_strlen(s);
 	if (n > s_len)
 		size = s_len;
 	else
 		size = n;
 	size_save = size;
-	s2 = (char *) malloc((size + 1) * sizeof (char)); 
+	s2 = (char *) malloc((size + 1) * sizeof (char));
 	if (!s2)
 		return (NULL);
 	while (size--)
 		*s2++ = *s++;
-	*s2 = 0;	
+	*s2 = 0;
 	return (s2 - size_save);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	s1_len;
-	size_t	s2_len;
-	char	*s3;
-
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	s3 = (char *) malloc((s1_len + s2_len + 1) * sizeof (char));
-	if (!s3)
-		return (NULL);
-	while (*s1)
-		*s3++ = *s1++;
-	while (*s2)
-		*s3++ = *s2++;
-	*s3 = '\0';
-	return (s3 - s2_len - s1_len);
 }
 
 char	*ft_strchr(const char *s, int c)
@@ -81,16 +62,16 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	unsigned char	*ptr;
 	size_t			len;
 	size_t			len_save;
-	
+
 	if (size && nmemb * size / size != nmemb)
-		return (NULL);		
+		return (NULL);
 	len = nmemb * size;
 	len_save = len;
 	ptr = (unsigned char *) malloc(len);
 	if (!ptr)
 		return (NULL);
 	while (len--)
-		*ptr++ = 0;	
+		*ptr++ = 0;
 	return ((void *) ptr - len_save);
 }
 
@@ -98,6 +79,6 @@ void	*free_buffer(char **buffer)
 {
 	if (*buffer)
 		free(*buffer);
-	*buffer = NULL;	
+	*buffer = NULL;
 	return (NULL);
 }
