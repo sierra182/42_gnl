@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/25 18:12:32 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/25 16:05:17 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,19 @@
 #include <stdint.h>
 
 #include <stdio.h>
+
+// void	del_buff(t_list **lst)
+// {
+// 	t_list	*temp;
+
+// 	while (*lst)
+// 	{
+// 		temp = (*lst)->next;
+// 		free((*lst)->buffer);		
+// 		free(*lst);
+// 		*lst = temp;
+// 	}
+// }
 
 // void	print_list(t_list *lst)
 // {
@@ -28,6 +41,28 @@
 // 	}
 // 	printf("je suis a la fin de printlist!\n");
 	
+// }
+
+// void	del_link(t_list *link, t_list **lst)
+// {
+// 	t_list	*lsttemp;
+// 	t_list	*lstnext;
+
+// 	lsttemp = *lst;
+// 	while (*lst)
+// 	{
+// 	printf("fd: %d\n", link->fd);
+// 		if ((*lst)->fd == link->fd)
+// 		{	
+// 			lstnext = (*lst)->next;
+// 			free((*lst)->buffer);
+// 			free(*lst);
+// 			if (lstnext)
+// 				*lst = lstnext;			
+// 		}
+// 		*lst = (*lst)->next;		
+// 	}
+// 	*lst = lsttemp; 
 // }
 
 void	del_link(t_list *link, t_list **lst)
@@ -59,6 +94,64 @@ void	del_link(t_list *link, t_list **lst)
 	}
 }
 
+
+
+	
+	// while (*lst && ((*lst)->fd != link->fd))	
+	// 	*lst = (*lst)->next;			
+	// if (*lst)
+	// {
+	// 	lstnext = (*lst)->next;
+	// 	free((*lst)->buffer);
+	// 	(*lst)->buffer = NULL;
+	// 	free(*lst);	
+	// 	if (*lst != lsttemp)	
+	// 	*lst = lstnext;	
+	// }
+	// if (*lst != lsttemp)
+	// 	*lst = lsttemp;
+	// else
+		
+	// if ((*lst)->fd == link->fd)
+	// {	
+	// 	lstnext = (*lst)->next;
+	// 	free((*lst)->buffer);
+	// 	free(*lst);
+	// 	*lst = lstnext;			
+	// }
+	// else
+	// {
+		
+	// while ((*lst)->next)
+	// {
+	// 	//printf("fd: %d\n", link->fd);
+	// 	if ((*lst)->next->fd == link->fd)
+	// 	{	
+	// 		lstnext = (*lst)->next->next;
+	// 		free((*lst)->next->buffer);
+	// 		free((*lst)->next);
+	// 		if (lstnext)
+	// 			*lst = lstnext;			
+	// 	}
+	// 	*lst = (*lst)->next;		
+	// }
+	// *lst = lsttemp; 
+	// }
+
+
+// void	del_lst(t_list **lst)
+// {
+// 	t_list	*temp;
+
+// 	while (*lst)
+// 	{
+// 		temp = (*lst)->next;
+// 		free((*lst)->buffer);		
+// 		free(*lst);
+// 		*lst = temp;
+// 	}
+// }
+
 t_list	*create_newlink(int fd)
 {
 	t_list	*newlink;
@@ -70,29 +163,43 @@ t_list	*create_newlink(int fd)
 	return (newlink);
 }
 
-t_list	*get_bufferlink(int fd, t_list **lst)
+t_list	*search_fdlink(int fd, t_list **lst)
 {
 	t_list	*fdlink;
 	t_list	*temp;
-
-	if (!*lst)
-		*lst = create_newlink(fd);	
+	
 	if ((*lst)->fd == fd)
 		return (*lst);		
 	temp = *lst;
 	while (temp->next)
 	{	
+		fdlink = temp;
 		if (temp->next->fd == fd)
-		{	
-			fdlink = temp->next;		
+		{	fdlink = temp->next;		
 			return (fdlink);
 		}
 		temp = temp->next;
 	}
-	fdlink = create_newlink(fd);
-	fdlink->next = *lst;
-	*lst = fdlink;	
+	return (NULL);
+}
+
+t_list	*lst_addfront(t_list **lst, t_list *new)
+{
+	new->next = *lst;
+	*lst = new;
 	return (*lst);
+}
+
+t_list	*get_bufferlink(int fd, t_list **lst)
+{
+	t_list	*fdlink;
+	
+	if (!*lst)
+		*lst = create_newlink(fd); 	
+	fdlink = search_fdlink(fd, lst); 
+	if (fdlink)
+	 	return (fdlink);	
+	return (lst_addfront(lst, create_newlink(fd)));
 }
 
 char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
@@ -110,8 +217,11 @@ char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
 	}
 	else
 	{
-		del_link(bufferlink, lst);		
-		return (NULL);
+		del_link(bufferlink, lst);
+		//del_lst(lst);
+		//free(bufferlink->buffer);
+		//bufferlink->buffer = NULL;
+		return (NULL);//(free_buffer(buffer));
 	}		
 }
 
@@ -177,7 +287,11 @@ char	*manage_no_newline(int fd, t_list *bufferlink, t_list **lst, char **newline
 		else
 		{
 			free(ext);
-			del_link(bufferlink, lst);		
+			del_link(bufferlink, lst);
+			//del_lst(lst);
+			// free(bufferlink->buffer);
+			// bufferlink->buffer = NULL;
+			//return (free_buffer(buffer));
 			return (NULL);			
 		}
 	}
@@ -219,7 +333,6 @@ char	*get_next_line(int fd)
 	bufferlink->buffer -= newline_len;
 	return (line);
 }
-
 /*
 #include <fcntl.h>
 #include <stdio.h>
@@ -280,3 +393,5 @@ int main(void)
 	return (0);
 }
 */
+
+
