@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/25 13:29:10 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/25 16:05:17 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,18 @@
 // 	}
 // }
 
-void	print_list(t_list *lst)
-{
-	printf("je suis au debut de printlist!\n");
-	while (lst)
-	{ 
-		usleep(500000);
-		printf("lst: %d\n", lst->fd);
-		lst = lst->next;
-	}
-	printf("je suis a la fin de printlist!\n");
+// void	print_list(t_list *lst)
+// {
+// 	printf("je suis au debut de printlist!\n");
+// 	while (lst)
+// 	{ 
+// 		usleep(500000);
+// 		printf("lst: %d\n", lst->fd);
+// 		lst = lst->next;
+// 	}
+// 	printf("je suis a la fin de printlist!\n");
 	
-}
+// }
 
 // void	del_link(t_list *link, t_list **lst)
 // {
@@ -69,48 +69,88 @@ void	del_link(t_list *link, t_list **lst)
 {
 	t_list	*lsttemp;
 	t_list	*lstnext;
-
-	lsttemp = *lst;
 	
-	if ((*lst)->fd == link->fd)
-	{	
-		lstnext = (*lst)->next;
-		free((*lst)->buffer);
-		free(*lst);
-		*lst = lstnext;			
-	}
-	else
+	lsttemp = *lst;
+	while (*lst)
 	{
-		
-	while ((*lst)->next)
-	{
-		//printf("fd: %d\n", link->fd);
-		if ((*lst)->next->fd == link->fd)
-		{	
+		if ((*lst)->fd == link->fd)
+		{
+			lstnext = (*lst)->next;
+			free((*lst)->buffer);
+			free(*lst);
+			*lst = lstnext;		
+			break ;
+		}
+		else if ((*lst)->next->fd == link->fd)
+		{
 			lstnext = (*lst)->next->next;
 			free((*lst)->next->buffer);
 			free((*lst)->next);
-			if (lstnext)
-				*lst = lstnext;			
-		}
-		*lst = (*lst)->next;		
-	}
-	*lst = lsttemp; 
+			(*lst)->next = lstnext;
+			*lst = lsttemp;
+			break ;
+		}				
+		*lst = (*lst)->next;
 	}
 }
 
-void	del_lst(t_list **lst)
-{
-	t_list	*temp;
 
-	while (*lst)
-	{
-		temp = (*lst)->next;
-		free((*lst)->buffer);		
-		free(*lst);
-		*lst = temp;
-	}
-}
+
+	
+	// while (*lst && ((*lst)->fd != link->fd))	
+	// 	*lst = (*lst)->next;			
+	// if (*lst)
+	// {
+	// 	lstnext = (*lst)->next;
+	// 	free((*lst)->buffer);
+	// 	(*lst)->buffer = NULL;
+	// 	free(*lst);	
+	// 	if (*lst != lsttemp)	
+	// 	*lst = lstnext;	
+	// }
+	// if (*lst != lsttemp)
+	// 	*lst = lsttemp;
+	// else
+		
+	// if ((*lst)->fd == link->fd)
+	// {	
+	// 	lstnext = (*lst)->next;
+	// 	free((*lst)->buffer);
+	// 	free(*lst);
+	// 	*lst = lstnext;			
+	// }
+	// else
+	// {
+		
+	// while ((*lst)->next)
+	// {
+	// 	//printf("fd: %d\n", link->fd);
+	// 	if ((*lst)->next->fd == link->fd)
+	// 	{	
+	// 		lstnext = (*lst)->next->next;
+	// 		free((*lst)->next->buffer);
+	// 		free((*lst)->next);
+	// 		if (lstnext)
+	// 			*lst = lstnext;			
+	// 	}
+	// 	*lst = (*lst)->next;		
+	// }
+	// *lst = lsttemp; 
+	// }
+
+
+// void	del_lst(t_list **lst)
+// {
+// 	t_list	*temp;
+
+// 	while (*lst)
+// 	{
+// 		temp = (*lst)->next;
+// 		free((*lst)->buffer);		
+// 		free(*lst);
+// 		*lst = temp;
+// 	}
+// }
 
 t_list	*create_newlink(int fd)
 {
@@ -247,8 +287,8 @@ char	*manage_no_newline(int fd, t_list *bufferlink, t_list **lst, char **newline
 		else
 		{
 			free(ext);
-			//del_link(&bufferlink, lst);
-			del_lst(lst);
+			del_link(bufferlink, lst);
+			//del_lst(lst);
 			// free(bufferlink->buffer);
 			// bufferlink->buffer = NULL;
 			//return (free_buffer(buffer));
@@ -353,6 +393,5 @@ int main(void)
 	return (0);
 }
 */
-
 
 
