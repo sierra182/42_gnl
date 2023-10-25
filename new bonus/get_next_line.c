@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/24 13:24:48 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/25 11:11:46 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char	*manage_no_newline(int fd, char **buffer, char **newline)
 			return (manage_endfile(buffer, ext));
 		else
 		{
-			free(ext);
+			free(ext);			
 			return (free_buffer(buffer));			
 		}
 	}

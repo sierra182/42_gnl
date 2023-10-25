@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:35 by seblin            #+#    #+#             */
-/*   Updated: 2023/10/25 10:55:42 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/23 07:44:00 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,8 +229,7 @@ char	*get_next_line(int fd)
 				return (line);
 			}
 			else
-			{		
-				//del_buff(&lst);				
+			{						
 				del_link(bufferlink, &lst);
 				return (NULL);								
 			}			

@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/25 12:02:16 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/25 10:25:57 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,27 @@
 // 	}
 // }
 
-void	del_link(t_list *link, t_list **lst)
-{
-	t_list	*lsttemp;
-	t_list	*lstnext;
+// void	del_link(t_list **link, t_list **lst)
+// {
+// 	t_list	*lsttemp;
+// 	t_list	*lstnext;
 
 	
-	lsttemp = *lst;
-	while (*lst)
-	{
-		if ((*lst)->fd == link->fd)
-		{			
-			lstnext = (*lst)->next;
-			free((*lst)->buffer);
-			free(*lst);
-			if (lstnext)
-				*lst = lstnext;			
-		}
-		*lst = (*lst)->next;		
-	}
-	*lst = lsttemp; 
-}
+// 	lsttemp = *lst;
+// 	while (*lst)
+// 	{
+// 		if ((*lst)->fd == (*link)->fd)
+// 		{			
+// 			lstnext = (*lst)->next;
+// 			free((*lst)->buffer);
+// 			free(*lst);
+// 			if (lstnext)
+// 				*lst = lstnext;			
+// 		}
+// 		*lst = (*lst)->next;		
+// 	}
+// 	*lst = lsttemp; 
+// }
 
 void	del_lst(t_list **lst)
 {
@@ -69,9 +69,9 @@ t_list	*create_newlink(int fd)
 {
 	t_list	*newlink;
 
-	newlink = (t_list *) ft_calloc(1, sizeof(t_list));
+	newlink = (t_list *) malloc(sizeof(t_list));
 	newlink->fd = fd;
-	newlink->buffer = (char *) ft_calloc(1, sizeof(char));	
+	newlink->buffer = (char *) malloc(sizeof(char));	
 	newlink->next = NULL;
 	return (newlink);
 }
@@ -115,7 +115,7 @@ t_list	*get_bufferlink(int fd, t_list **lst)
 	return (lst_addfront(lst, create_newlink(fd)));
 }
 
-char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
+char	*manage_endfile(t_list *bufferlink, t_list **lst, char *ext)
 {
 	char		*line;
 
@@ -130,8 +130,7 @@ char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
 	}
 	else
 	{
-		del_link(bufferlink, lst);
-		//del_lst(lst);
+		del_lst(lst);
 		//free(bufferlink->buffer);
 		//bufferlink->buffer = NULL;
 		return (NULL);//(free_buffer(buffer));
@@ -196,7 +195,7 @@ char	*manage_no_newline(int fd, t_list *bufferlink, t_list **lst, char **newline
 			*newline = ft_strchr(bufferlink->buffer, '\n');
 		}
 		else if (read_size == 0)
-			return (manage_endfile(bufferlink, ext, lst));
+			return (manage_endfile(bufferlink, lst, ext));
 		else
 		{
 			free(ext);
@@ -223,12 +222,7 @@ char	*get_next_line(int fd)
 	// if (!manage_prequel(&buffer))
 	//  	return (NULL);
 	bufferlink = get_bufferlink(fd, &lst);
-	// if (!bufferlink->buffer)
-	// {
-	// 	bufferlink->buffer = (char *) ft_calloc(1, sizeof(char));
-	// 	// if (!*buffer)
-	// 	// 	return (NULL);
-	// }
+	
 	newline = ft_strchr(bufferlink->buffer, '\n');
 	if (!newline)
 	{
@@ -246,7 +240,7 @@ char	*get_next_line(int fd)
 	bufferlink->buffer -= newline_len;
 	return (line);
 }
-
+/*
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -305,6 +299,6 @@ int main(void)
 	close(fd2);
 	return (0);
 }
-
+*/
 
 
