@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/26 07:07:21 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/26 19:42:33 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return ((void *) ptr - len_save);
 }
 
-void	*free_buffer(char **buffer)
-{
-	if (*buffer)
-		free(*buffer);
-	*buffer = NULL;
-	return (NULL);
-}
+// void	*free_buffer(char **buffer)
+// {
+// 	if (*buffer)
+// 		free(*buffer);
+// 	*buffer = NULL;
+// 	return (NULL);
+// }
