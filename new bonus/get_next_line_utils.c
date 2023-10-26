@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/24 12:37:06 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/26 06:47:23 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ char	*ft_strndup(const char *s, size_t n)
 		size = n;
 	size_save = size;
 	s2 = (char *) malloc((size + 1) * sizeof (char));
-	// if (!s2)
-	// 	return (NULL);
+	if (!s2)
+		return (NULL);
 	while (size--)
 		*s2++ = *s++;
 	*s2 = 0;
@@ -68,8 +68,8 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	len = nmemb * size;
 	len_save = len;
 	ptr = (unsigned char *) malloc(len);
-	// if (!ptr)
-	// 	return (NULL);
+	if (!ptr)
+		return (NULL);
 	while (len--)
 		*ptr++ = 0;
 	return ((void *) ptr - len_save);

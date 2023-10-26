@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/25 18:12:32 by svidot           ###   ########.fr       */
+/*   Updated: 2023/10/26 08:42:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,16 @@ t_list	*create_newlink(int fd)
 	t_list	*newlink;
 
 	newlink = (t_list *) ft_calloc(1, sizeof(t_list));
+	if (!newlink)
+		return (NULL);
 	newlink->fd = fd;
-	newlink->buffer = (char *) ft_calloc(1, sizeof(char));	
+	newlink->buffer = (char *) ft_calloc(1, sizeof(char));
+	if (!newlink->buffer)
+	{
+		free(newlink);
+		newlink = NULL;
+		return (NULL);	
+	}
 	newlink->next = NULL;
 	return (newlink);
 }
@@ -76,7 +84,11 @@ t_list	*get_bufferlink(int fd, t_list **lst)
 	t_list	*temp;
 
 	if (!*lst)
+	{		
 		*lst = create_newlink(fd);	
+		if (!*lst)
+			return (NULL);
+	}
 	if ((*lst)->fd == fd)
 		return (*lst);		
 	temp = *lst;
@@ -90,6 +102,8 @@ t_list	*get_bufferlink(int fd, t_list **lst)
 		temp = temp->next;
 	}
 	fdlink = create_newlink(fd);
+	if (!fdlink)
+		return (NULL);
 	fdlink->next = *lst;
 	*lst = fdlink;	
 	return (*lst);
@@ -103,8 +117,12 @@ char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
 	if (*bufferlink->buffer)
 	{	
 		line = ft_strndup(bufferlink->buffer, ft_strlen(bufferlink->buffer));
-		// if (!line)
-		// 	return (free_buffer(buffer));
+		if (!line)
+		{
+			del_link(bufferlink, lst);		
+			return (NULL);
+		}	
+		//return (free_buffer(&bufferlink->buffer));
 		bufferlink->buffer[0] = '\0'; 
 		return (line);
 	}
@@ -129,7 +147,7 @@ char	*manage_endfile(t_list *bufferlink, char *ext, t_list **lst)
 // 	return ("ok");
 // }
 
-char	*merge_buffers(t_list *bufferlink, char *ext)
+char	*merge_buffers(t_list *bufferlink, char *ext, t_list **lst)
 {
 	char	*new_buff;
 	size_t	buffer_len;
@@ -138,11 +156,15 @@ char	*merge_buffers(t_list *bufferlink, char *ext)
 	buffer_len = ft_strlen(bufferlink->buffer);
 	ext_len = ft_strlen(ext);
 	new_buff = (char *) malloc((buffer_len + ext_len + 1) * sizeof (char));
-	// if (!new_buff)
-	// {
-	// 	free(ext);
-	// 	return (free_buffer(buffer));
-	// }
+	if (!new_buff)
+	{
+		free(ext);
+		//return (free_buffer(&bufferlink->buffer));
+	
+			del_link(bufferlink, lst);		
+			return (NULL);
+	
+	}
 	while (*bufferlink->buffer)
 		*new_buff++ = *bufferlink->buffer++;
 	while (*ext)
@@ -163,12 +185,16 @@ char	*manage_no_newline(int fd, t_list *bufferlink, t_list **lst, char **newline
 	while (!*newline)
 	{
 		ext = (char *) ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-		// if (!ext)
-		// 	return (free_buffer(buffer));
+		if (!ext)
+		{
+			del_link(bufferlink, lst);		
+			return (NULL);
+		}	
+			//return (free_buffer(&bufferlink->buffer));
 		read_size = read(fd, ext, BUFFER_SIZE);
 		if (read_size > 0)
 		{
-			if (!merge_buffers(bufferlink, ext))
+			if (!merge_buffers(bufferlink, ext, lst))
 				return (NULL);
 			*newline = ft_strchr(bufferlink->buffer, '\n');
 		}
@@ -196,6 +222,8 @@ char	*get_next_line(int fd)
 	// if (!manage_prequel(&buffer))
 	//  	return (NULL);
 	bufferlink = get_bufferlink(fd, &lst);
+	if (!bufferlink)
+		return (NULL);
 	// if (!bufferlink->buffer)
 	// {
 	// 	bufferlink->buffer = (char *) ft_calloc(1, sizeof(char));
@@ -210,7 +238,11 @@ char	*get_next_line(int fd)
 			return (rslt_nonewl);
 	}
 	line = ft_strndup(bufferlink->buffer, ++newline - bufferlink->buffer);
-	// if (!line)
+	 if (!line)
+	 {
+			del_link(bufferlink, &lst);		
+			return (NULL);
+		}	
 	// 	return (free_buffer(&buffer));
 	newline_len = ft_strlen(newline);
 	while (*newline)
@@ -279,4 +311,5 @@ int main(void)
 	close(fd2);
 	return (0);
 }
+
 */
