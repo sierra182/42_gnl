@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/26 06:46:44 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/26 22:46:10 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <stdint.h>
 
-char	*manage_endfile(char **buffer, char *ext)
+static char	*manage_endfile(char **buffer, char *ext)
 {
 	char		*line;
 
@@ -28,15 +28,12 @@ char	*manage_endfile(char **buffer, char *ext)
 		(*buffer)[0] = '\0';
 		return (line);
 	}
-	else		
+	else
 		return (free_buffer(buffer));
 }
 
-char	*manage_prequel(char **buffer)
+static char	*manage_prequel(char **buffer)
 {
-	// if (fd < 0 || BUFFER_SIZE <= 0)
-	// 	return (NULL);
-		//return (free_buffer(buffer));
 	if (!*buffer)
 	{
 		*buffer = (char *) ft_calloc(1, sizeof(char));
@@ -46,7 +43,7 @@ char	*manage_prequel(char **buffer)
 	return ("ok");
 }
 
-char	*merge_buffers(char **buffer, char *ext)
+static char	*merge_buffers(char **buffer, char *ext)
 {
 	char	*new_buff;
 	size_t	buffer_len;
@@ -72,7 +69,7 @@ char	*merge_buffers(char **buffer, char *ext)
 	return ("ok");
 }
 
-char	*manage_no_newline(int fd, char **buffer, char **newline)
+static char	*manage_no_newline(int fd, char **buffer, char **newline)
 {
 	char		*ext;
 	ssize_t		read_size;
@@ -93,8 +90,8 @@ char	*manage_no_newline(int fd, char **buffer, char **newline)
 			return (manage_endfile(buffer, ext));
 		else
 		{
-			free(ext);			
-			return (free_buffer(buffer));			
+			free(ext);
+			return (free_buffer(buffer));
 		}
 	}
 	return (NULL);

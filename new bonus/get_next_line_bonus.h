@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/17 14:15:30 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/24 12:55:16 by svidot           ###   ########.fr       */
+/*   Created: 2023/10/26 22:43:49 by seblin            #+#    #+#             */
+/*   Updated: 2023/10/26 22:45:09 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1
@@ -19,19 +19,19 @@
 
 # include <stdlib.h>
 
-typedef struct s_list 
+typedef struct s_list
 {
 	int				fd;
 	char			*buffer;
 	struct s_list	*next;	
-} t_list;
+}					t_list;
 
 char	*get_next_line(int fd);
+void	*del_link(t_list *link, t_list **lst, t_list *lstsave);
 size_t	ft_strlen(const char *s);
-char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_strchr(const char *s, int c);
-void	*free_buffer(char **buffer);
 void	*ft_calloc(size_t nmemb, size_t size);
+char	*merge_buffers(t_list *bufferlink, char *ext, t_list **lst);
 
 #endif

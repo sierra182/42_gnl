@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 14:14:05 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/26 19:42:33 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/26 22:33:01 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,28 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return ((void *) ptr - len_save);
 }
 
-// void	*free_buffer(char **buffer)
-// {
-// 	if (*buffer)
-// 		free(*buffer);
-// 	*buffer = NULL;
-// 	return (NULL);
-// }
+char	*merge_buffers(t_list *bufferlink, char *ext, t_list **lst)
+{
+	char	*new_buff;
+	size_t	buffer_len;
+	size_t	ext_len;
+
+	buffer_len = ft_strlen(bufferlink->buffer);
+	ext_len = ft_strlen(ext);
+	new_buff = (char *) malloc((buffer_len + ext_len + 1) * sizeof (char));
+	if (!new_buff)
+	{
+		free(ext);
+		return (del_link(bufferlink, lst, *lst));
+	}
+	while (*bufferlink->buffer)
+		*new_buff++ = *bufferlink->buffer++;
+	while (*ext)
+		*new_buff++ = *ext++;
+	*new_buff = '\0';
+	bufferlink->buffer -= buffer_len;
+	free(bufferlink->buffer);
+	free(ext - ext_len);
+	bufferlink->buffer = new_buff - ext_len - buffer_len;
+	return ("ok");
+}
