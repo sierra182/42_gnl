@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/26 08:42:55 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/26 13:27:26 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,14 @@
 // 		printf("lst: %d\n", lst->fd);
 // 		lst = lst->next;
 // 	}
-// 	printf("je suis a la fin de printlist!\n");
-	
+// 	printf("je suis a la fin de printlist!\n");	
 // }
 
-void	del_link(t_list *link, t_list **lst)
+void	*del_link(t_list *link, t_list **lst)
 {
 	t_list	*lsttemp;
 	t_list	*lstnext;
-	
+
 	lsttemp = *lst;
 	while (*lst)
 	{
@@ -43,7 +42,7 @@ void	del_link(t_list *link, t_list **lst)
 			lstnext = (*lst)->next;
 			free((*lst)->buffer);
 			free(*lst);
-			*lst = lstnext;		
+			*lst = lstnext;
 			break ;
 		}
 		else if ((*lst)->next->fd == link->fd)
@@ -54,9 +53,9 @@ void	del_link(t_list *link, t_list **lst)
 			(*lst)->next = lstnext;
 			*lst = lsttemp;
 			break ;
-		}				
+		}
 		*lst = (*lst)->next;
-	}
+	}	
 }
 
 t_list	*create_newlink(int fd)
@@ -218,18 +217,11 @@ char	*get_next_line(int fd)
 	char			*line;
 	char			*rslt_nonewl;
 	size_t			newline_len;
-	//print_list(lst);
-	// if (!manage_prequel(&buffer))
-	//  	return (NULL);
+
 	bufferlink = get_bufferlink(fd, &lst);
 	if (!bufferlink)
 		return (NULL);
-	// if (!bufferlink->buffer)
-	// {
-	// 	bufferlink->buffer = (char *) ft_calloc(1, sizeof(char));
-	// 	// if (!*buffer)
-	// 	// 	return (NULL);
-	// }
+
 	newline = ft_strchr(bufferlink->buffer, '\n');
 	if (!newline)
 	{
