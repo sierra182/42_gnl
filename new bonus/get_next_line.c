@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 13:29:55 by svidot            #+#    #+#             */
-/*   Updated: 2023/10/26 22:46:10 by seblin           ###   ########.fr       */
+/*   Updated: 2023/10/27 11:24:00 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <unistd.h>
-#include <fcntl.h>
-#include <stdint.h>
 
 static char	*manage_endfile(char **buffer, char *ext)
 {
@@ -124,30 +122,3 @@ char	*get_next_line(int fd)
 	buffer -= newline_len;
 	return (line);
 }
-
-/*
-#include <fcntl.h>
-#include <stdio.h>
-
-int main(void)
-{
-	int		fd;
-	char	*path = "test.txt";
-	char	*rslt;
-	
-	rslt = NULL;
-	fd = open(path, O_RDONLY);
-	rslt = get_next_line(fd);	
-	while (rslt)
-	{
-		if (!rslt) 
-			printf("is null\n");
-		else
-			printf("rslt: %s", rslt);
-		free(rslt);
-		rslt = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
-}
-*/

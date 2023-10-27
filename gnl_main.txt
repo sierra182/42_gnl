@@ -1,0 +1,83 @@
+#include <fcntl.h>
+#include <stdio.h>
+
+int main(void)
+{
+	int		fd;
+	int		fd2;
+	char	*path = "test.txt";
+	char	*path2 = "test2.txt";
+	char	*rslt;
+	char	*rslt2;
+	
+	rslt = "a";
+	rslt2 = "a";
+	fd = open(path, O_RDONLY);
+	fd2 = open(path2, O_RDONLY);
+		
+	int pass = 0;	
+	while (rslt)
+	{
+		rslt = get_next_line(fd);
+		if (!rslt) 
+			printf("is null\n");
+		else
+			printf("rslt: %s", rslt);
+		free(rslt);
+		
+		printf("\033[36m");
+		while (!pass && rslt2)
+		{
+			rslt2 = get_next_line(fd2);	
+			if (!rslt2) 
+			printf("is null\n");
+			else
+			printf("in rslt: %s", rslt2);
+			free(rslt2);	
+		}
+		pass++;
+		printf("\033[0m");
+	}
+	close(fd);
+	fd = open(path, O_RDONLY);
+	rslt = "a";
+	printf("\033[33m");
+	while (rslt)
+	{
+		rslt = get_next_line(fd);
+		if (!rslt) 
+			printf("is null\n");
+		else
+			printf("rslt: %s", rslt);
+		free(rslt);
+	}
+	printf("\033[0m");
+	close(fd);
+	close(fd2);
+	return (0);
+}
+
+#include <fcntl.h>
+#include <stdio.h>
+
+int main(void)
+{
+	int		fd;
+	char	*path = "test.txt";
+	char	*rslt;
+	
+	rslt = NULL;
+	fd = open(path, O_RDONLY);
+	rslt = get_next_line(fd);	
+	while (rslt)
+	{
+		if (!rslt) 
+			printf("is null\n");
+		else
+			printf("rslt: %s", rslt);
+		free(rslt);
+		rslt = get_next_line(fd);
+	}
+	close(fd);
+	return (0);
+}
